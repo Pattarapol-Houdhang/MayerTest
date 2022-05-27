@@ -99,7 +99,7 @@ body {
 
 .repos-item {
 	border: 1px solid #000000;
-	height: 180px;
+	height: 200px;
 	padding: 2.5%;
 	margin: 1rem;
 }
@@ -135,4 +135,21 @@ p {
 
 .repos-download > button {
 	width: 100%
+}
+.account {
+	height: 70px;
+	display: flex;
+	flex-direction: row;
+	justify-content: normal;
+	align-items:center
+}
+.acc-content {
+	border: 1px solid;
+	margin: 1rem;
+	padding: 0.5rem;
+}
+.a-link{
+	text-align:center;
+	color:blue;
+	width:100%
 }

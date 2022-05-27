@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Account>
+﻿@model IEnumerable<Item>
 @{
 	ViewData["Title"] = "Home Page";
 
@@ -13,28 +13,29 @@
 }
 
 <div class="banner">
-	<div>
-		<img src="https://www.analyticsvidhya.com/wp-content/uploads/2015/07/github_logo.png" alt="Alternate Text" style=" width: 150px;" />
+	<div style=" display: block; margin: auto;">
+		<img src="https://www.analyticsvidhya.com/wp-content/uploads/2015/07/github_logo.png" alt="Alternate Text" style="  width: 345px;  height: 100px;" />
 	</div>
-	<div class="banner-content">
-		<p>Quiz usring Github API</p>
+	<div >
+		<p style=" font-weight: bold; font-size: 50px;">Quiz usring Github API</p>
 		<br />
-		<p>Developed by <p style="color:red">Pattarapol Houdhang </p>
+		<div style=" display: flex;">
+			<p style="margin-right: 2%;">Developed by </p>
+			 <p style="color:red">Pattarapol Houdhang </p>
+		</div>
+
 		<form asp-controller="Home" asp-action="Index" method="get">
-			<p>
-				Title: <input type="text" class="form-control" name="SearchString" />
+			<div style="display:flex">
+				<input style="width: 55%; margin-right: 2%;" type="text" class="form-control" name="SearchString" />
 				<button class="btn btn-primary" type="submit"><span>SEARCH</span></button>
-			</p>
+
+			</div>
 		</form>
 	</div>
 </div>
-
-
-<p>
-	<a asp-action="Create">Create New</a>
-</p>
+<br />
 <div class="d-flex flex-column justify-content-center align-items-center">
-	<table>
+	<table >
 		<tbody>
 
 			@foreach (var productGroup in Model.Select((e, i) => new { Product = e, Grouping = (i / 4) }).GroupBy(e => e.Grouping))
@@ -43,25 +44,19 @@
 					@foreach (var item in productGroup.Select(x => x.Product))
 					{
 						<td class="repos-col">
-							<div class="repos-item" > 
-								<div class="repos-content">
-									@*<img src="@Html.DisplayFor(modelItem => item.avatar_url)" alt="" style="width:50px;height:50px;border-radius:50%" />*@
-									<p>@Html.DisplayFor(modelItem => item.name)</p>
-									<p class="description">@Html.DisplayFor(modelItem => item.description)</p>
-									<p>@Html.DisplayFor(modelItem => item.language)</p>
+							<div class="acc-content">
+								<div class="account">
+									<img src="@Html.DisplayFor(modelItem => item.avatar_url)" alt="" style="width:50px;height:50px;border-radius:50%" />
+									<p style="margin-left:2%">@Html.DisplayFor(modelItem => item.login)</p>
+
 								</div>
-								<div class="repos-sub-content">
-									<div class="repos-sub-content-inner">
-										<p>STARS</p>
-										<p>4</p>
-									</div>
-									<div class="repos-sub-content-inner">
-										<p>VIEWS</p>
-										<p>4</p>
-									</div>
+								<div class="justify-content-end" style="display: flex;">
+									<p>Score : </p>
+									<p>@Html.DisplayFor(modelItem => item.score)</p>
 								</div>
-								<div class="repos-download">  
-									<button class="btn btn-primary" href="@Html.DisplayFor(modelItem => item.html_url)/archive/refs/heads/master.zip">Download</button>
+								<hr />
+								<div class="repos-download">
+									<a class="btn a-link" asp-controller="Home" asp-action="Repository" asp-route-login="@item.login"><span>VIEW REPOSITORY</span></a>
 								</div>
 							</div>
 						</td>
@@ -74,38 +69,37 @@
 
 <div>
 	@*asp-route-SearchString="@ViewData["SearchString"]"*@
-	@if (pager.TotalPages > 0)
+	@if (pager.TotalPages > 0 && pager.TotalPages != 1)
 	{
-	<ul class="pagination justify-content-end">
+		<ul class="pagination justify-content-end">
 
-		@if (pager.CurrentPage > 1)
-		{
-			<li>
-				<a class="page-link" asp-controller="Home" asp-action="Index" asp-route-page="@(pager.StartPage)">First</a>
-			</li>
+			@if (pager.CurrentPage > 1)
+			{
+				<li>
+					<a class="page-link" asp-controller="Home" asp-action="Index" asp-route-page="@(pager.StartPage)">First</a>
+				</li>
 
-			<li>
-				<a class="page-link" asp-controller="Home" asp-action="Index" asp-route-page="@(pager.CurrentPage -1)">Previous</a>
-			</li>
-		}
-		@for (var pge = pager.StartPage; pge <= pager.EndPage; pge++)
-		{
-			<li class="page-item @(pge == pager.CurrentPage ? "active" : "")">
-				<a class="page-link" asp-controller="Home" asp-action="Index" asp-route-page="@pge">@pge</a>
-			</li>
+				<li>
+					<a class="page-link" asp-controller="Home" asp-action="Index" asp-route-page="@(pager.CurrentPage -1)">Previous</a>
+				</li>
+			}
+			@for (var pge = pager.StartPage; pge <= pager.EndPage; pge++)
+			{
+				<li class="page-item @(pge == pager.CurrentPage ? "active" : "")">
+					<a class="page-link" asp-controller="Home" asp-action="Index" asp-route-page="@pge">@pge</a>
+				</li>
 
-		}
-		@if (pager.CurrentPage < pager.TotalPages)
-		{
-			<li>
-				<a class="page-link" asp-controller="Home" asp-action="Index" asp-route-page="@(pager.CurrentPage +1)">Next</a>
-			</li>
-			<li>
-				<a class="page-link" asp-controller="Home" asp-action="Index" asp-route-page="@(pager.TotalPages)">Next</a>
-			</li>
-		}
-	</ul>
+			}
+			@if (pager.CurrentPage < pager.TotalPages)
+			{
+				<li>
+					<a class="page-link" asp-controller="Home" asp-action="Index" asp-route-page="@(pager.CurrentPage +1)">Next</a>
+				</li>
+				<li>
+					<a class="page-link" asp-controller="Home" asp-action="Index" asp-route-page="@(pager.TotalPages)">Next</a>
+				</li>
+			}
+		</ul>
 	}
 </div>
-
 

@@ -11,7 +11,7 @@ namespace MayerTest.Models
 		public string full_name { get; set; }
 		public string name { get; set; }
 		public string stargazers_count { get; set; }
-		public string watchers_coun { get; set; }
+		public string watchers_count { get; set; }
 		public string downloads_url { get; set; }
 		public string avatar_url { get; set; }
 		public string language { get; set; }

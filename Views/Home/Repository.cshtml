@@ -1,0 +1,122 @@
+﻿@model IEnumerable<Account>
+@{
+	ViewData["Title"] = "Repository";
+
+	Pager pager = new Pager();
+	int pageNo = 0;
+	var login = "";
+	var account = "";
+	if (ViewBag.Pager != null)
+	{
+		pager = ViewBag.Pager;
+		pageNo = pager.CurrentPage;
+	}
+	if (ViewBag.login != null)
+	{
+		login = ViewBag.login;
+	}
+	if (ViewBag.account != null)
+	{
+		account = ViewBag.account;
+	}
+}
+
+<div class="d-flex flex-column justify-content-center align-items-center">
+	@if (Model.Count() <= 0)
+	{
+		<p style="color:red">Not found Repository</p>
+	}
+	<div style=" width: 100%;margin-left:5%">
+		<p>@account / </p>
+		<p>Repositories on GitHub</p>
+		<a style="margin-top:1%" class="btn btn-danger" asp-controller="Home" asp-action="Index" asp-route-SearchString=@login>BACK</a>
+	</div>
+	<table  >
+		<tbody>
+
+			@foreach (var productGroup in Model.Select((e, i) => new { Product = e, Grouping = (i / 4) }).GroupBy(e => e.Grouping))
+			{
+				<tr>
+					@foreach (var item in productGroup.Select(x => x.Product))
+					{
+						<td class="repos-col">
+							<div class="repos-item">
+								<div class="repos-content">
+									@*<img src="@Html.DisplayFor(modelItem => item.avatar_url)" alt="" style="width:50px;height:50px;border-radius:50%" />*@
+									<p>@Html.DisplayFor(modelItem => item.name)</p>
+									<p class="description">@Html.DisplayFor(modelItem => item.description)</p>
+									<p style="color:red">@Html.DisplayFor(modelItem => item.language)</p>
+								</div>
+								<div class="repos-sub-content">
+									<div class="repos-sub-content-inner">
+										<p>STARS</p>
+										@if (item.stargazers_count != "0" || item.stargazers_count == null)
+										{
+											<p>@Html.DisplayFor(modelItem => item.stargazers_count)</p>
+
+										}
+										else
+										{
+											<p>0</p>
+										}
+									</div>
+									<div class="repos-sub-content-inner">
+										<p>VIEWS</p>
+										@if (item.watchers_count != "0" || item.watchers_count == null)
+										{
+											<p>@Html.DisplayFor(modelItem => item.watchers_count)</p> 
+										}
+										else
+										{
+											<p>0</p>
+										}
+									</div>
+								</div>
+								<div class="repos-download">
+									<button class="btn btn-primary" onclick="window.location.href='@Html.DisplayFor(modelItem => item.html_url)/archive/refs/heads/master.zip'">Download</button>
+								</div>
+							</div>
+						</td>
+					}
+				</tr>
+			}
+		</tbody>
+	</table>
+</div>
+
+<div>
+	@if (pager.TotalPages > 0 && pager.TotalPages != 1)
+	{
+		<ul class="pagination justify-content-end">
+
+			@if (pager.CurrentPage > 1)
+			{
+				<li>
+					<a class="page-link" asp-controller="Home" asp-action="Repository" asp-route-login=@account asp-route-page="@(pager.StartPage)">First</a>
+				</li>
+
+				<li>
+					<a class="page-link" asp-controller="Home" asp-action="Repository" asp-route-login=@account asp-route-page="@(pager.CurrentPage -1)">Previous</a>
+				</li>
+			}
+			@for (var pge = pager.StartPage; pge <= pager.EndPage; pge++)
+			{
+				<li class="page-item @(pge == pager.CurrentPage ? "active" : "")">
+					<a class="page-link" asp-controller="Home" asp-action="Repository" asp-route-login=@account asp-route-page="@pge">@pge</a>
+				</li>
+
+			}
+			@if (pager.CurrentPage < pager.TotalPages)
+			{
+				<li>
+					<a class="page-link" asp-controller="Home" asp-action="Repository" asp-route-login=@account asp-route-page="@(pager.CurrentPage +1)">Next</a>
+				</li>
+				<li>
+					<a class="page-link" asp-controller="Home" asp-action="Repository" asp-route-login=@account asp-route-page="@(pager.TotalPages)">Next</a>
+				</li>
+			}
+		</ul>
+	}
+</div>
+
+
