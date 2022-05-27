@@ -1,0 +1,111 @@
+﻿@model IEnumerable<Account>
+@{
+	ViewData["Title"] = "Home Page";
+
+	Pager pager = new Pager();
+	int pageNo = 0;
+	if (ViewBag.Pager != null)
+	{
+		pager = ViewBag.Pager;
+		pageNo = pager.CurrentPage;
+	}
+
+}
+
+<div class="banner">
+	<div>
+		<img src="https://www.analyticsvidhya.com/wp-content/uploads/2015/07/github_logo.png" alt="Alternate Text" style=" width: 150px;" />
+	</div>
+	<div class="banner-content">
+		<p>Quiz usring Github API</p>
+		<br />
+		<p>Developed by <p style="color:red">Pattarapol Houdhang </p>
+		<form asp-controller="Home" asp-action="Index" method="get">
+			<p>
+				Title: <input type="text" class="form-control" name="SearchString" />
+				<button class="btn btn-primary" type="submit"><span>SEARCH</span></button>
+			</p>
+		</form>
+	</div>
+</div>
+
+
+<p>
+	<a asp-action="Create">Create New</a>
+</p>
+<div class="d-flex flex-column justify-content-center align-items-center">
+	<table>
+		<tbody>
+
+			@foreach (var productGroup in Model.Select((e, i) => new { Product = e, Grouping = (i / 4) }).GroupBy(e => e.Grouping))
+			{
+				<tr>
+					@foreach (var item in productGroup.Select(x => x.Product))
+					{
+						<td class="repos-col">
+							<div class="repos-item" > 
+								<div class="repos-content">
+									@*<img src="@Html.DisplayFor(modelItem => item.avatar_url)" alt="" style="width:50px;height:50px;border-radius:50%" />*@
+									<p>@Html.DisplayFor(modelItem => item.name)</p>
+									<p class="description">@Html.DisplayFor(modelItem => item.description)</p>
+									<p>@Html.DisplayFor(modelItem => item.language)</p>
+								</div>
+								<div class="repos-sub-content">
+									<div class="repos-sub-content-inner">
+										<p>STARS</p>
+										<p>4</p>
+									</div>
+									<div class="repos-sub-content-inner">
+										<p>VIEWS</p>
+										<p>4</p>
+									</div>
+								</div>
+								<div class="repos-download">  
+									<button class="btn btn-primary" href="@Html.DisplayFor(modelItem => item.html_url)/archive/refs/heads/master.zip">Download</button>
+								</div>
+							</div>
+						</td>
+					}
+				</tr>
+			}
+		</tbody>
+	</table>
+</div>
+
+<div>
+	@*asp-route-SearchString="@ViewData["SearchString"]"*@
+	@if (pager.TotalPages > 0)
+	{
+	<ul class="pagination justify-content-end">
+
+		@if (pager.CurrentPage > 1)
+		{
+			<li>
+				<a class="page-link" asp-controller="Home" asp-action="Index" asp-route-page="@(pager.StartPage)">First</a>
+			</li>
+
+			<li>
+				<a class="page-link" asp-controller="Home" asp-action="Index" asp-route-page="@(pager.CurrentPage -1)">Previous</a>
+			</li>
+		}
+		@for (var pge = pager.StartPage; pge <= pager.EndPage; pge++)
+		{
+			<li class="page-item @(pge == pager.CurrentPage ? "active" : "")">
+				<a class="page-link" asp-controller="Home" asp-action="Index" asp-route-page="@pge">@pge</a>
+			</li>
+
+		}
+		@if (pager.CurrentPage < pager.TotalPages)
+		{
+			<li>
+				<a class="page-link" asp-controller="Home" asp-action="Index" asp-route-page="@(pager.CurrentPage +1)">Next</a>
+			</li>
+			<li>
+				<a class="page-link" asp-controller="Home" asp-action="Index" asp-route-page="@(pager.TotalPages)">Next</a>
+			</li>
+		}
+	</ul>
+	}
+</div>
+
+
